@@ -1,2 +1,1 @@
-go to the fork
-[https://github.com/Calisen-IT/links](https://github.com/Calisen-IT/links)
+Copy the example yaml in the links directory to add a new link, fairly self explanatory.
