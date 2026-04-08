@@ -52,7 +52,6 @@ for file in os.listdir(LINKS_DIR):
 
     print(f"Generated: {short} → {url}")
 
-# ✅ Fully upgraded index
 INDEX_TEMPLATE = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -64,15 +63,20 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
     import 'https://esm.run/@material/web/all.js';
   </script>
 
+  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
   <style>
     :root {{
       color-scheme: light dark;
 
       --md-sys-color-primary: #6750a4;
+      --md-sys-color-on-primary: #ffffff;
+
       --md-sys-color-background: #fefbff;
       --md-sys-color-on-background: #1c1b1f;
+
       --md-sys-color-surface: #ffffff;
       --md-sys-color-on-surface: #1c1b1f;
     }}
@@ -80,8 +84,11 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
     @media (prefers-color-scheme: dark) {{
       :root {{
         --md-sys-color-primary: #d0bcff;
+        --md-sys-color-on-primary: #381e72;
+
         --md-sys-color-background: #1c1b1f;
         --md-sys-color-on-background: #e6e1e5;
+
         --md-sys-color-surface: #2b2930;
         --md-sys-color-on-surface: #e6e1e5;
       }}
@@ -104,13 +111,13 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
       margin-bottom: 1rem;
     }}
 
-    /* Search */
     .search {{
       margin-bottom: 1rem;
     }}
 
     input {{
       width: 100%;
+      box-sizing: border-box;
       padding: 0.75rem;
       border-radius: 12px;
       border: none;
@@ -120,7 +127,6 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
       font-size: 1rem;
     }}
 
-    /* Cards */
     .link-card {{
       margin: 0.5rem 0;
       padding: 0.75rem 1rem;
@@ -129,7 +135,7 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.75rem;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }}
 
@@ -142,15 +148,39 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
 
     .actions {{
       display: flex;
-      gap: 0.25rem;
+      gap: 0.5rem;
     }}
 
     md-filled-button {{
+      --md-filled-button-container-color: var(--md-sys-color-primary);
+      --md-filled-button-label-text-color: var(--md-sys-color-on-primary);
       --md-filled-button-container-height: 40px;
     }}
 
-    md-icon-button {{
-      --md-icon-button-size: 40px;
+    md-filled-tonal-icon-button {{
+      --md-filled-tonal-icon-button-container-height: 40px;
+      border-radius: 12px;
+    }}
+
+    /* Snackbar */
+    .snackbar {{
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--md-sys-color-surface);
+      color: var(--md-sys-color-on-surface);
+      padding: 0.75rem 1.25rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      opacity: 0;
+      transition: all 0.25s ease;
+      pointer-events: none;
+    }}
+
+    .snackbar.show {{
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }}
 
     @media (prefers-color-scheme: dark) {{
@@ -159,7 +189,6 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
       }}
     }}
 
-    /* Mobile stacking */
     @media (max-width: 480px) {{
       .link-card {{
         flex-direction: column;
@@ -190,8 +219,10 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
     </div>
   </div>
 
+  <!-- Snackbar -->
+  <div id="snackbar" class="snackbar">Copied!</div>
+
   <script>
-    // 🔍 Search filter
     const search = document.getElementById('search');
     search.addEventListener('input', () => {{
       const q = search.value.toLowerCase();
@@ -201,10 +232,16 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
       }});
     }});
 
-    // 📋 Copy
+    function showSnackbar() {{
+      const el = document.getElementById('snackbar');
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 2000);
+    }}
+
     function copyLink(path) {{
       const url = window.location.origin + '/' + path;
       navigator.clipboard.writeText(url);
+      showSnackbar();
     }}
   </script>
 </body>
@@ -222,9 +259,9 @@ for short, url in sorted(generated_links):
           <md-filled-button>Open</md-filled-button>
         </a>
 
-        <md-icon-button onclick="copyLink('{short}')">
-          📋
-        </md-icon-button>
+        <md-filled-tonal-icon-button aria-label="Copy link" onclick="copyLink('{short}')">
+          <md-icon>content_copy</md-icon>
+        </md-filled-tonal-icon-button>
       </div>
     </div>
     '''
