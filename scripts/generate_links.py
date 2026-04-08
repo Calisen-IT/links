@@ -54,8 +54,66 @@ for file in os.listdir(LINKS_DIR):
     print(f"Generated: {short} → {url}")
 
 # optional: generate index page
+INDEX_TEMPLATE = """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Short Links</title>
+
+  <script type="module">
+    import 'https://esm.run/@material/web/all.js';
+  </script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+
+  <style>
+    body {{
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background: #fefbff;
+    }}
+
+    .container {{
+      max-width: 800px;
+      margin: auto;
+    }}
+
+    .link-card {{
+      margin: 0.5rem 0;
+      padding: 1rem;
+      border-radius: 12px;
+      background: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }}
+
+    a {{
+      text-decoration: none;
+    }}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Short Links</h1>
+    {links}
+  </div>
+</body>
+</html>
+"""
+
+link_items = ""
+for short, url in sorted(generated_links):
+    link_items += f'''
+    <div class="link-card">
+      <span>{short}</span>
+      <a href="/{short}">
+        <md-filled-button>Open</md-filled-button>
+      </a>
+    </div>
+    '''
+
 with open("index.html", "w") as f:
-    f.write("<h1>Short Links</h1><ul>")
-    for short, url in sorted(generated_links):
-        f.write(f'<li><a href="/{short}">{short}</a> → {url}</li>')
-    f.write("</ul>")
+    f.write(INDEX_TEMPLATE.format(links=link_items))
