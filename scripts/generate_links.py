@@ -55,7 +55,7 @@ for file in os.listdir(LINKS_DIR):
 INDEX_TEMPLATE = """<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Short Links</title>
 
@@ -63,9 +63,9 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
     import 'https://esm.run/@material/web/all.js';
   </script>
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- Fonts and Material Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 
   <style>
     :root {
@@ -152,6 +152,7 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
     .actions {
       display: flex;
       gap: 0.5rem;
+      align-items: center;
     }
 
     md-filled-button {
@@ -163,6 +164,19 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
     md-filled-tonal-icon-button {
       --md-filled-tonal-icon-button-container-height: 40px;
       border-radius: 12px;
+      background-color: var(--md-sys-color-primary);
+      color: var(--md-sys-color-on-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    md-filled-tonal-icon-button md-icon {
+      color: var(--md-sys-color-on-primary);
+    }
+
+    md-filled-tonal-icon-button:hover {
+      background-color: #533d8a; /* Slightly darker on hover */
     }
 
     @media (prefers-color-scheme: dark) {
@@ -187,7 +201,7 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
       }
     }
 
-    /* Custom snackbar */
+    /* Snackbar */
     #snackbar {
       visibility: hidden;
       min-width: 240px;
@@ -203,17 +217,32 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
       font-size: 1rem;
       z-index: 9999;
     }
+
     #snackbar.show {
       visibility: visible;
       animation: fadein 0.25s, fadeout 0.25s 2s;
     }
+
     @keyframes fadein {
-      from { bottom: 0; opacity: 0; }
-      to { bottom: 24px; opacity: 1; }
+      from {
+        bottom: 0;
+        opacity: 0;
+      }
+      to {
+        bottom: 24px;
+        opacity: 1;
+      }
     }
+
     @keyframes fadeout {
-      from { bottom: 24px; opacity: 1; }
-      to { bottom: 0; opacity: 0; }
+      from {
+        bottom: 24px;
+        opacity: 1;
+      }
+      to {
+        bottom: 0;
+        opacity: 0;
+      }
     }
   </style>
 </head>
@@ -250,8 +279,9 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
 
     function copyLink(path) {
       const url = window.location.origin + '/' + path;
-      navigator.clipboard.writeText(url);
-      showSnackbar(); // show toast
+      navigator.clipboard.writeText(url).then(() => {
+        showSnackbar();
+      });
     }
   </script>
 </body>
