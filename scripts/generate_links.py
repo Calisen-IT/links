@@ -52,6 +52,11 @@ for file in os.listdir(LINKS_DIR):
 
     print(f"Generated: {short} → {url}")
 
+# ============================
+# Fully escaped INDEX_TEMPLATE
+# (literal CSS/JS braces doubled per Python format rules) :contentReference[oaicite:1]{index=1}
+# ============================
+
 INDEX_TEMPLATE = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -68,7 +73,7 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 
   <style>
-    :root {
+    :root {{
       color-scheme: light dark;
 
       --md-sys-color-primary: #6750a4;
@@ -82,10 +87,10 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
 
       --snackbar-bg: rgba(0,0,0,0.85);
       --snackbar-text: #fff;
-    }
+    }}
 
-    @media (prefers-color-scheme: dark) {
-      :root {
+    @media (prefers-color-scheme: dark) {{
+      :root {{
         --md-sys-color-background: #1c1b1f;
         --md-sys-color-on-background: #e6e1e5;
 
@@ -94,31 +99,31 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
 
         --snackbar-bg: rgba(255,255,255,0.12);
         --snackbar-text: #e6e1e5;
-      }
-    }
+      }}
+    }}
 
-    body {
+    body {{
       font-family: 'Roboto', sans-serif;
       margin: 0;
       padding: 1rem;
       background: var(--md-sys-color-background);
       color: var(--md-sys-color-on-background);
-    }
+    }}
 
-    .container {
+    .container {{
       max-width: 800px;
       margin: auto;
-    }
+    }}
 
-    h1 {
+    h1 {{
       margin-bottom: 1rem;
-    }
+    }}
 
-    .search {
+    .search {{
       margin-bottom: 1rem;
-    }
+    }}
 
-    input {
+    input {{
       width: 100%;
       box-sizing: border-box;
       padding: 0.75rem;
@@ -128,9 +133,9 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
       background: var(--md-sys-color-surface);
       color: var(--md-sys-color-on-surface);
       font-size: 1rem;
-    }
+    }}
 
-    .link-card {
+    .link-card {{
       margin: 0.5rem 0;
       padding: 0.75rem 1rem;
       border-radius: 16px;
@@ -140,28 +145,28 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
       align-items: center;
       gap: 0.75rem;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
+    }}
 
-    .left {
+    .left {{
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       flex: 1;
-    }
+    }}
 
-    .actions {
+    .actions {{
       display: flex;
       gap: 0.5rem;
       align-items: center;
-    }
+    }}
 
-    md-filled-button {
+    md-filled-button {{
       --md-filled-button-container-color: var(--md-sys-color-primary);
       --md-filled-button-label-text-color: var(--md-sys-color-on-primary);
       --md-filled-button-container-height: 40px;
-    }
+    }}
 
-    md-filled-tonal-icon-button {
+    md-filled-tonal-icon-button {{
       --md-filled-tonal-icon-button-container-height: 40px;
       border-radius: 12px;
       background-color: var(--md-sys-color-primary);
@@ -169,40 +174,40 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
       display: flex;
       align-items: center;
       justify-content: center;
-    }
+    }}
 
-    md-filled-tonal-icon-button md-icon {
+    md-filled-tonal-icon-button md-icon {{
       color: var(--md-sys-color-on-primary);
-    }
+    }}
 
-    md-filled-tonal-icon-button:hover {
-      background-color: #533d8a; /* Slightly darker on hover */
-    }
+    md-filled-tonal-icon-button:hover {{
+      background-color: #533d8a;
+    }}
 
-    @media (prefers-color-scheme: dark) {
-      .link-card {
+    @media (prefers-color-scheme: dark) {{
+      .link-card {{
         box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-      }
-    }
+      }}
+    }}
 
-    @media (max-width: 480px) {
-      .link-card {
+    @media (max-width: 480px) {{
+      .link-card {{
         flex-direction: column;
         align-items: stretch;
-      }
+      }}
 
-      .actions {
+      .actions {{
         width: 100%;
         justify-content: space-between;
-      }
+      }}
 
-      md-filled-button {
+      md-filled-button {{
         flex: 1;
-      }
-    }
+      }}
+    }}
 
     /* Snackbar */
-    #snackbar {
+    #snackbar {{
       visibility: hidden;
       min-width: 240px;
       background-color: var(--snackbar-bg);
@@ -216,34 +221,34 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
       transform: translateX(-50%);
       font-size: 1rem;
       z-index: 9999;
-    }
+    }}
 
-    #snackbar.show {
+    #snackbar.show {{
       visibility: visible;
       animation: fadein 0.25s, fadeout 0.25s 2s;
-    }
+    }}
 
-    @keyframes fadein {
-      from {
+    @keyframes fadein {{
+      from {{
         bottom: 0;
         opacity: 0;
-      }
-      to {
+      }}
+      to {{
         bottom: 24px;
         opacity: 1;
-      }
-    }
+      }}
+    }}
 
-    @keyframes fadeout {
-      from {
+    @keyframes fadeout {{
+      from {{
         bottom: 24px;
         opacity: 1;
-      }
-      to {
+      }}
+      to {{
         bottom: 0;
         opacity: 0;
-      }
-    }
+      }}
+    }}
   </style>
 </head>
 <body>
@@ -263,26 +268,26 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
 
   <script>
     const search = document.getElementById('search');
-    search.addEventListener('input', () => {
+    search.addEventListener('input', () => {{
       const q = search.value.toLowerCase();
-      document.querySelectorAll('.link-card').forEach(el => {
+      document.querySelectorAll('.link-card').forEach(el => {{
         const text = el.dataset.name;
         el.style.display = text.includes(q) ? '' : 'none';
-      });
-    });
+      }});
+    }});
 
-    function showSnackbar() {
+    function showSnackbar() {{
       const sb = document.getElementById('snackbar');
       sb.classList.add('show');
       setTimeout(() => sb.classList.remove('show'), 2300);
-    }
+    }}
 
-    function copyLink(path) {
+    function copyLink(path) {{
       const url = window.location.origin + '/' + path;
-      navigator.clipboard.writeText(url).then(() => {
+      navigator.clipboard.writeText(url).then(() => {{
         showSnackbar();
-      });
-    }
+      }});
+    }}
   </script>
 </body>
 </html>
@@ -293,12 +298,10 @@ for short, url in sorted(generated_links):
     link_items += f'''
     <div class="link-card" data-name="{short.lower()}">
       <div class="left">{short}</div>
-
       <div class="actions">
         <a href="/{short}">
           <md-filled-button>Open</md-filled-button>
         </a>
-
         <md-filled-tonal-icon-button aria-label="Copy link" onclick="copyLink('{short}')">
           <md-icon>content_copy</md-icon>
         </md-filled-tonal-icon-button>
