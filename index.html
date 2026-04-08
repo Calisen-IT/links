@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Short Links</title>
 
@@ -9,9 +9,9 @@
     import 'https://esm.run/@material/web/all.js';
   </script>
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- Fonts and Material Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 
   <style>
     :root {
@@ -25,18 +25,21 @@
 
       --md-sys-color-surface: #ffffff;
       --md-sys-color-on-surface: #1c1b1f;
+
+      --snackbar-bg: rgba(0,0,0,0.85);
+      --snackbar-text: #fff;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --md-sys-color-primary: #d0bcff;
-        --md-sys-color-on-primary: #381e72;
-
         --md-sys-color-background: #1c1b1f;
         --md-sys-color-on-background: #e6e1e5;
 
         --md-sys-color-surface: #2b2930;
         --md-sys-color-on-surface: #e6e1e5;
+
+        --snackbar-bg: rgba(255,255,255,0.12);
+        --snackbar-text: #e6e1e5;
       }
     }
 
@@ -95,6 +98,7 @@
     .actions {
       display: flex;
       gap: 0.5rem;
+      align-items: center;
     }
 
     md-filled-button {
@@ -106,27 +110,19 @@
     md-filled-tonal-icon-button {
       --md-filled-tonal-icon-button-container-height: 40px;
       border-radius: 12px;
+      background-color: var(--md-sys-color-primary);
+      color: var(--md-sys-color-on-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    /* Snackbar */
-    .snackbar {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      background: var(--md-sys-color-surface);
-      color: var(--md-sys-color-on-surface);
-      padding: 0.75rem 1.25rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      opacity: 0;
-      transition: all 0.25s ease;
-      pointer-events: none;
+    md-filled-tonal-icon-button md-icon {
+      color: var(--md-sys-color-on-primary);
     }
 
-    .snackbar.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
+    md-filled-tonal-icon-button:hover {
+      background-color: #533d8a;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -150,6 +146,50 @@
         flex: 1;
       }
     }
+
+    /* Snackbar */
+    #snackbar {
+      visibility: hidden;
+      min-width: 240px;
+      background-color: var(--snackbar-bg);
+      color: var(--snackbar-text);
+      text-align: center;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      font-size: 1rem;
+      z-index: 9999;
+    }
+
+    #snackbar.show {
+      visibility: visible;
+      animation: fadein 0.25s, fadeout 0.25s 2s;
+    }
+
+    @keyframes fadein {
+      from {
+        bottom: 0;
+        opacity: 0;
+      }
+      to {
+        bottom: 24px;
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeout {
+      from {
+        bottom: 24px;
+        opacity: 1;
+      }
+      to {
+        bottom: 0;
+        opacity: 0;
+      }
+    }
   </style>
 </head>
 <body>
@@ -164,12 +204,10 @@
       
     <div class="link-card" data-name="8x8">
       <div class="left">8x8</div>
-
       <div class="actions">
         <a href="/8x8">
           <md-filled-button>Open</md-filled-button>
         </a>
-
         <md-filled-tonal-icon-button aria-label="Copy link" onclick="copyLink('8x8')">
           <md-icon>content_copy</md-icon>
         </md-filled-tonal-icon-button>
@@ -178,12 +216,10 @@
     
     <div class="link-card" data-name="cascade">
       <div class="left">cascade</div>
-
       <div class="actions">
         <a href="/cascade">
           <md-filled-button>Open</md-filled-button>
         </a>
-
         <md-filled-tonal-icon-button aria-label="Copy link" onclick="copyLink('cascade')">
           <md-icon>content_copy</md-icon>
         </md-filled-tonal-icon-button>
@@ -192,12 +228,10 @@
     
     <div class="link-card" data-name="dhl">
       <div class="left">dhl</div>
-
       <div class="actions">
         <a href="/dhl">
           <md-filled-button>Open</md-filled-button>
         </a>
-
         <md-filled-tonal-icon-button aria-label="Copy link" onclick="copyLink('dhl')">
           <md-icon>content_copy</md-icon>
         </md-filled-tonal-icon-button>
@@ -206,12 +240,10 @@
     
     <div class="link-card" data-name="grid">
       <div class="left">grid</div>
-
       <div class="actions">
         <a href="/grid">
           <md-filled-button>Open</md-filled-button>
         </a>
-
         <md-filled-tonal-icon-button aria-label="Copy link" onclick="copyLink('grid')">
           <md-icon>content_copy</md-icon>
         </md-filled-tonal-icon-button>
@@ -220,12 +252,10 @@
     
     <div class="link-card" data-name="it-fresh">
       <div class="left">it-fresh</div>
-
       <div class="actions">
         <a href="/it-fresh">
           <md-filled-button>Open</md-filled-button>
         </a>
-
         <md-filled-tonal-icon-button aria-label="Copy link" onclick="copyLink('it-fresh')">
           <md-icon>content_copy</md-icon>
         </md-filled-tonal-icon-button>
@@ -234,12 +264,10 @@
     
     <div class="link-card" data-name="ivanti">
       <div class="left">ivanti</div>
-
       <div class="actions">
         <a href="/ivanti">
           <md-filled-button>Open</md-filled-button>
         </a>
-
         <md-filled-tonal-icon-button aria-label="Copy link" onclick="copyLink('ivanti')">
           <md-icon>content_copy</md-icon>
         </md-filled-tonal-icon-button>
@@ -249,8 +277,7 @@
     </div>
   </div>
 
-  <!-- Snackbar -->
-  <div id="snackbar" class="snackbar">Copied!</div>
+  <div id="snackbar">Copied!</div>
 
   <script>
     const search = document.getElementById('search');
@@ -263,15 +290,16 @@
     });
 
     function showSnackbar() {
-      const el = document.getElementById('snackbar');
-      el.classList.add('show');
-      setTimeout(() => el.classList.remove('show'), 2000);
+      const sb = document.getElementById('snackbar');
+      sb.classList.add('show');
+      setTimeout(() => sb.classList.remove('show'), 2300);
     }
 
     function copyLink(path) {
       const url = window.location.origin + '/' + path;
-      navigator.clipboard.writeText(url);
-      showSnackbar();
+      navigator.clipboard.writeText(url).then(() => {
+        showSnackbar();
+      });
     }
   </script>
 </body>
