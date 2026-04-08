@@ -68,7 +68,7 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
   <style>
-    :root {{
+    :root {
       color-scheme: light dark;
 
       --md-sys-color-primary: #6750a4;
@@ -79,43 +79,46 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
 
       --md-sys-color-surface: #ffffff;
       --md-sys-color-on-surface: #1c1b1f;
-    }}
 
-    @media (prefers-color-scheme: dark) {{
-      :root {{
-        --md-sys-color-primary: #d0bcff;
-        --md-sys-color-on-primary: #381e72;
+      --snackbar-bg: rgba(0,0,0,0.85);
+      --snackbar-text: #fff;
+    }
 
+    @media (prefers-color-scheme: dark) {
+      :root {
         --md-sys-color-background: #1c1b1f;
         --md-sys-color-on-background: #e6e1e5;
 
         --md-sys-color-surface: #2b2930;
         --md-sys-color-on-surface: #e6e1e5;
-      }}
-    }}
 
-    body {{
+        --snackbar-bg: rgba(255,255,255,0.12);
+        --snackbar-text: #e6e1e5;
+      }
+    }
+
+    body {
       font-family: 'Roboto', sans-serif;
       margin: 0;
       padding: 1rem;
       background: var(--md-sys-color-background);
       color: var(--md-sys-color-on-background);
-    }}
+    }
 
-    .container {{
+    .container {
       max-width: 800px;
       margin: auto;
-    }}
+    }
 
-    h1 {{
+    h1 {
       margin-bottom: 1rem;
-    }}
+    }
 
-    .search {{
+    .search {
       margin-bottom: 1rem;
-    }}
+    }
 
-    input {{
+    input {
       width: 100%;
       box-sizing: border-box;
       padding: 0.75rem;
@@ -125,9 +128,9 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
       background: var(--md-sys-color-surface);
       color: var(--md-sys-color-on-surface);
       font-size: 1rem;
-    }}
+    }
 
-    .link-card {{
+    .link-card {
       margin: 0.5rem 0;
       padding: 0.75rem 1rem;
       border-radius: 16px;
@@ -137,73 +140,81 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
       align-items: center;
       gap: 0.75rem;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }}
+    }
 
-    .left {{
+    .left {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       flex: 1;
-    }}
+    }
 
-    .actions {{
+    .actions {
       display: flex;
       gap: 0.5rem;
-    }}
+    }
 
-    md-filled-button {{
+    md-filled-button {
       --md-filled-button-container-color: var(--md-sys-color-primary);
       --md-filled-button-label-text-color: var(--md-sys-color-on-primary);
       --md-filled-button-container-height: 40px;
-    }}
+    }
 
-    md-filled-tonal-icon-button {{
+    md-filled-tonal-icon-button {
       --md-filled-tonal-icon-button-container-height: 40px;
       border-radius: 12px;
-    }}
+    }
 
-    /* Snackbar */
-    .snackbar {{
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      background: var(--md-sys-color-surface);
-      color: var(--md-sys-color-on-surface);
-      padding: 0.75rem 1.25rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      opacity: 0;
-      transition: all 0.25s ease;
-      pointer-events: none;
-    }}
-
-    .snackbar.show {{
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }}
-
-    @media (prefers-color-scheme: dark) {{
-      .link-card {{
+    @media (prefers-color-scheme: dark) {
+      .link-card {
         box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-      }}
-    }}
+      }
+    }
 
-    @media (max-width: 480px) {{
-      .link-card {{
+    @media (max-width: 480px) {
+      .link-card {
         flex-direction: column;
         align-items: stretch;
-      }}
+      }
 
-      .actions {{
+      .actions {
         width: 100%;
         justify-content: space-between;
-      }}
+      }
 
-      md-filled-button {{
+      md-filled-button {
         flex: 1;
-      }}
-    }}
+      }
+    }
+
+    /* Custom snackbar */
+    #snackbar {
+      visibility: hidden;
+      min-width: 240px;
+      background-color: var(--snackbar-bg);
+      color: var(--snackbar-text);
+      text-align: center;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      font-size: 1rem;
+      z-index: 9999;
+    }
+    #snackbar.show {
+      visibility: visible;
+      animation: fadein 0.25s, fadeout 0.25s 2s;
+    }
+    @keyframes fadein {
+      from { bottom: 0; opacity: 0; }
+      to { bottom: 24px; opacity: 1; }
+    }
+    @keyframes fadeout {
+      from { bottom: 24px; opacity: 1; }
+      to { bottom: 0; opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -219,30 +230,29 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
     </div>
   </div>
 
-  <!-- Snackbar -->
-  <div id="snackbar" class="snackbar">Copied!</div>
+  <div id="snackbar">Copied!</div>
 
   <script>
     const search = document.getElementById('search');
-    search.addEventListener('input', () => {{
+    search.addEventListener('input', () => {
       const q = search.value.toLowerCase();
-      document.querySelectorAll('.link-card').forEach(el => {{
+      document.querySelectorAll('.link-card').forEach(el => {
         const text = el.dataset.name;
         el.style.display = text.includes(q) ? '' : 'none';
-      }});
-    }});
+      });
+    });
 
-    function showSnackbar() {{
-      const el = document.getElementById('snackbar');
-      el.classList.add('show');
-      setTimeout(() => el.classList.remove('show'), 2000);
-    }}
+    function showSnackbar() {
+      const sb = document.getElementById('snackbar');
+      sb.classList.add('show');
+      setTimeout(() => sb.classList.remove('show'), 2300);
+    }
 
-    function copyLink(path) {{
+    function copyLink(path) {
       const url = window.location.origin + '/' + path;
       navigator.clipboard.writeText(url);
-      showSnackbar();
-    }}
+      showSnackbar(); // show toast
+    }
   </script>
 </body>
 </html>
