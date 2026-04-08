@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Link ZIP Generator</title>
+<script src="jszip.min.js"></script>
+<style>
+#warnings {
+    color: red;
+    margin-bottom: 10px;
+    white-space: pre-line;
+}
+#spinner {
+    display: none;
+    font-family: monospace;
+    margin-left: 10px;
+}
+</style>
+</head>
+<body>
+<h2>Generate Link ZIP</h2>
+
+<p>
+  Short name: links.calisen.com/
+  <input type="text" id="shortName" placeholder="short-link">
+</p>
+
+<p>
+  Target URL:
+  <input type="text" id="targetUrl" placeholder="https://example.com" size="50">
+  <span id="spinner">█▒▒▒▒▒▒▒▒▒</span>
+</p>
+
+<div id="warnings"></div>
+
+<button type="button" id="generateBtn">Generate ZIP</button>
+
+<script>
+const validTlds = ['com','org','net','io','gov','edu','co','us','uk','de','fr','jp','ca','au'];
+
+function normalizeUrl(url) {
+    url = url.trim();
+    if (!/^https?:\/\//i.test(url)) {
+        url = 'https://' + url;
+    }
+    return url;
+}
+
+function hasValidTld(url) {
+    try {
+        const hostname = new URL(url).hostname;
+        const parts = hostname.split('.');
+        const tld = parts[parts.length - 1].toLowerCase();
+        return validTlds.includes(tld);
+    } catch {
+        return false;
+    }
+}
+
+async function isReachable(url) {
+    try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 5000);
+        await fetch(url, {method: 'HEAD', mode: 'no-cors', signal: controller.signal});
+        clearTimeout(timeout);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+// Progress bar spinner
+let spinnerInterval;
+const spinnerFrames = [
+    "█▒▒▒▒▒▒▒▒▒",
+    "██▒▒▒▒▒▒▒▒",
+    "███▒▒▒▒▒▒▒",
+    "████▒▒▒▒▒▒",
+    "█████▒▒▒▒▒",
+    "██████▒▒▒▒",
+    "███████▒▒▒",
+    "████████▒▒",
+    "█████████▒",
+    "██████████",
+    "█████████▒",
+    "████████▒▒",
+    "███████▒▒▒",
+    "██████▒▒▒▒",
+    "█████▒▒▒▒▒",
+    "████▒▒▒▒▒▒",
+    "███▒▒▒▒▒▒▒",
+    "██▒▒▒▒▒▒▒▒"
+];
+
+function startSpinner() {
+    const spinner = document.getElementById('spinner');
+    spinner.style.display = 'inline';
+    let i = 0;
+    spinnerInterval = setInterval(() => {
+        spinner.textContent = spinnerFrames[i % spinnerFrames.length];
+        i++;
+    }, 150); // adjust speed as desired
+}
+
+function stopSpinner() {
+    clearInterval(spinnerInterval);
+    document.getElementById('spinner').style.display = 'none';
+}
+
+const warningsDiv = document.getElementById('warnings');
+const targetInput = document.getElementById('targetUrl');
+
+// Live TLD validation as user types
+targetInput.addEventListener('input', () => {
+    const url = normalizeUrl(targetInput.value);
+    if (!url) {
+        warningsDiv.textContent = '';
+        return;
+    }
+    if (!hasValidTld(url)) {
+        warningsDiv.textContent = '⚠️ URL does not end with a recognized TLD.';
+    } else {
+        warningsDiv.textContent = '';
+    }
+});
+
+document.getElementById('generateBtn').addEventListener('click', async () => {
+    const shortName = document.getElementById('shortName').value.trim();
+    let targetUrl = targetInput.value.trim();
+
+    if (!shortName || !targetUrl) {
+        alert("Both fields are required!");
+        return;
+    }
+
+    targetUrl = normalizeUrl(targetUrl);
+
+    // Start spinner and cursor wait
+    startSpinner();
+    document.body.style.cursor = 'wait';
+
+    const reachable = await isReachable(targetUrl);
+
+    // Stop spinner and reset cursor
+    stopSpinner();
+    document.body.style.cursor = 'default';
+
+    if (!reachable) {
+        warningsDiv.textContent = warningsDiv.textContent
+            ? warningsDiv.textContent + '\n⚠️ Website is not reachable (ping failed).'
+            : '⚠️ Website is not reachable (ping failed).';
+    }
+
+    // Generate ZIP
+    const zip = new JSZip();
+    zip.file(`${shortName}.yml`, `short: ${shortName}\nurl: ${targetUrl}\n`);
+    zip.file("Click Here to Upload to Github.url", `[InternetShortcut]
+URL=https://github.com/Calisen-IT/links/upload/main/links
+IconFile=https://github.com/favicon.ico
+IconIndex=0
+`);
+
+    const blob = await zip.generateAsync({ type: "blob" });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${shortName}.zip`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+});
+</script>
+</body>
+</html>
