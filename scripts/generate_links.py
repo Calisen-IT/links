@@ -40,7 +40,6 @@ for file in os.listdir(LINKS_DIR):
 
     output_path = os.path.join(OUTPUT_DIR, short)
 
-    # remove existing folder to avoid stale files
     if os.path.exists(output_path):
         shutil.rmtree(output_path)
 
@@ -53,7 +52,7 @@ for file in os.listdir(LINKS_DIR):
 
     print(f"Generated: {short} → {url}")
 
-# optional: generate index page
+# ✅ Material 3 + auto dark mode index
 INDEX_TEMPLATE = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -67,11 +66,38 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 
   <style>
+    :root {{
+      color-scheme: light dark;
+
+      --md-sys-color-primary: #6750a4;
+      --md-sys-color-on-primary: #ffffff;
+
+      --md-sys-color-background: #fefbff;
+      --md-sys-color-on-background: #1c1b1f;
+
+      --md-sys-color-surface: #ffffff;
+      --md-sys-color-on-surface: #1c1b1f;
+    }}
+
+    @media (prefers-color-scheme: dark) {{
+      :root {{
+        --md-sys-color-primary: #d0bcff;
+        --md-sys-color-on-primary: #381e72;
+
+        --md-sys-color-background: #1c1b1f;
+        --md-sys-color-on-background: #e6e1e5;
+
+        --md-sys-color-surface: #2b2930;
+        --md-sys-color-on-surface: #e6e1e5;
+      }}
+    }}
+
     body {{
       font-family: 'Roboto', sans-serif;
       margin: 0;
       padding: 2rem;
-      background: #fefbff;
+      background: var(--md-sys-color-background);
+      color: var(--md-sys-color-on-background);
     }}
 
     .container {{
@@ -83,11 +109,20 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
       margin: 0.5rem 0;
       padding: 1rem;
       border-radius: 12px;
-      background: white;
+      background: var(--md-sys-color-surface);
+      color: var(--md-sys-color-on-surface);
+
       display: flex;
       justify-content: space-between;
       align-items: center;
+
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }}
+
+    @media (prefers-color-scheme: dark) {{
+      .link-card {{
+        box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      }}
     }}
 
     a {{
