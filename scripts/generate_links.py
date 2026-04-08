@@ -52,11 +52,12 @@ for file in os.listdir(LINKS_DIR):
 
     print(f"Generated: {short} → {url}")
 
-# ✅ Material 3 + auto dark mode index
+# ✅ Fully upgraded index
 INDEX_TEMPLATE = """<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Short Links</title>
 
   <script type="module">
@@ -70,11 +71,8 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
       color-scheme: light dark;
 
       --md-sys-color-primary: #6750a4;
-      --md-sys-color-on-primary: #ffffff;
-
       --md-sys-color-background: #fefbff;
       --md-sys-color-on-background: #1c1b1f;
-
       --md-sys-color-surface: #ffffff;
       --md-sys-color-on-surface: #1c1b1f;
     }}
@@ -82,11 +80,8 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
     @media (prefers-color-scheme: dark) {{
       :root {{
         --md-sys-color-primary: #d0bcff;
-        --md-sys-color-on-primary: #381e72;
-
         --md-sys-color-background: #1c1b1f;
         --md-sys-color-on-background: #e6e1e5;
-
         --md-sys-color-surface: #2b2930;
         --md-sys-color-on-surface: #e6e1e5;
       }}
@@ -95,7 +90,7 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
     body {{
       font-family: 'Roboto', sans-serif;
       margin: 0;
-      padding: 2rem;
+      padding: 1rem;
       background: var(--md-sys-color-background);
       color: var(--md-sys-color-on-background);
     }}
@@ -105,18 +100,57 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
       margin: auto;
     }}
 
-    .link-card {{
-      margin: 0.5rem 0;
-      padding: 1rem;
+    h1 {{
+      margin-bottom: 1rem;
+    }}
+
+    /* Search */
+    .search {{
+      margin-bottom: 1rem;
+    }}
+
+    input {{
+      width: 100%;
+      padding: 0.75rem;
       border-radius: 12px;
+      border: none;
+      outline: none;
       background: var(--md-sys-color-surface);
       color: var(--md-sys-color-on-surface);
+      font-size: 1rem;
+    }}
 
+    /* Cards */
+    .link-card {{
+      margin: 0.5rem 0;
+      padding: 0.75rem 1rem;
+      border-radius: 16px;
+      background: var(--md-sys-color-surface);
       display: flex;
       justify-content: space-between;
       align-items: center;
-
+      gap: 0.5rem;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }}
+
+    .left {{
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1;
+    }}
+
+    .actions {{
+      display: flex;
+      gap: 0.25rem;
+    }}
+
+    md-filled-button {{
+      --md-filled-button-container-height: 40px;
+    }}
+
+    md-icon-button {{
+      --md-icon-button-size: 40px;
     }}
 
     @media (prefers-color-scheme: dark) {{
@@ -125,16 +159,54 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
       }}
     }}
 
-    a {{
-      text-decoration: none;
+    /* Mobile stacking */
+    @media (max-width: 480px) {{
+      .link-card {{
+        flex-direction: column;
+        align-items: stretch;
+      }}
+
+      .actions {{
+        width: 100%;
+        justify-content: space-between;
+      }}
+
+      md-filled-button {{
+        flex: 1;
+      }}
     }}
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Short Links</h1>
-    {links}
+
+    <div class="search">
+      <input id="search" placeholder="Search links..." />
+    </div>
+
+    <div id="list">
+      {links}
+    </div>
   </div>
+
+  <script>
+    // 🔍 Search filter
+    const search = document.getElementById('search');
+    search.addEventListener('input', () => {{
+      const q = search.value.toLowerCase();
+      document.querySelectorAll('.link-card').forEach(el => {{
+        const text = el.dataset.name;
+        el.style.display = text.includes(q) ? '' : 'none';
+      }});
+    }});
+
+    // 📋 Copy
+    function copyLink(path) {{
+      const url = window.location.origin + '/' + path;
+      navigator.clipboard.writeText(url);
+    }}
+  </script>
 </body>
 </html>
 """
@@ -142,11 +214,18 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
 link_items = ""
 for short, url in sorted(generated_links):
     link_items += f'''
-    <div class="link-card">
-      <span>{short}</span>
-      <a href="/{short}">
-        <md-filled-button>Open</md-filled-button>
-      </a>
+    <div class="link-card" data-name="{short.lower()}">
+      <div class="left">{short}</div>
+
+      <div class="actions">
+        <a href="/{short}">
+          <md-filled-button>Open</md-filled-button>
+        </a>
+
+        <md-icon-button onclick="copyLink('{short}')">
+          📋
+        </md-icon-button>
+      </div>
     </div>
     '''
 
