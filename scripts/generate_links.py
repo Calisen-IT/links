@@ -53,8 +53,7 @@ for file in os.listdir(LINKS_DIR):
     print(f"Generated: {short} → {url}")
 
 # ============================
-# Fully escaped INDEX_TEMPLATE
-# (literal CSS/JS braces doubled per Python format rules) :contentReference[oaicite:1]{index=1}
+# Index page template without copy buttons
 # ============================
 
 INDEX_TEMPLATE = """<!DOCTYPE html>
@@ -68,37 +67,26 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
     import 'https://esm.run/@material/web/all.js';
   </script>
 
-  <!-- Fonts and Material Icons -->
+  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 
   <style>
     :root {{
       color-scheme: light dark;
-
       --md-sys-color-primary: #6750a4;
       --md-sys-color-on-primary: #ffffff;
-
       --md-sys-color-background: #fefbff;
       --md-sys-color-on-background: #1c1b1f;
-
       --md-sys-color-surface: #ffffff;
       --md-sys-color-on-surface: #1c1b1f;
-
-      --snackbar-bg: rgba(0,0,0,0.85);
-      --snackbar-text: #fff;
     }}
 
     @media (prefers-color-scheme: dark) {{
       :root {{
         --md-sys-color-background: #1c1b1f;
         --md-sys-color-on-background: #e6e1e5;
-
         --md-sys-color-surface: #2b2930;
         --md-sys-color-on-surface: #e6e1e5;
-
-        --snackbar-bg: rgba(255,255,255,0.12);
-        --snackbar-text: #e6e1e5;
       }}
     }}
 
@@ -166,24 +154,6 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
       --md-filled-button-container-height: 40px;
     }}
 
-    md-filled-tonal-icon-button {{
-      --md-filled-tonal-icon-button-container-height: 40px;
-      border-radius: 12px;
-      background-color: var(--md-sys-color-primary);
-      color: var(--md-sys-color-on-primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }}
-
-    md-filled-tonal-icon-button md-icon {{
-      color: var(--md-sys-color-on-primary);
-    }}
-
-    md-filled-tonal-icon-button:hover {{
-      background-color: #533d8a;
-    }}
-
     @media (prefers-color-scheme: dark) {{
       .link-card {{
         box-shadow: 0 1px 3px rgba(0,0,0,0.3);
@@ -205,50 +175,6 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
         flex: 1;
       }}
     }}
-
-    /* Snackbar */
-    #snackbar {{
-      visibility: hidden;
-      min-width: 240px;
-      background-color: var(--snackbar-bg);
-      color: var(--snackbar-text);
-      text-align: center;
-      border-radius: 8px;
-      padding: 0.75rem 1rem;
-      position: fixed;
-      left: 50%;
-      bottom: 24px;
-      transform: translateX(-50%);
-      font-size: 1rem;
-      z-index: 9999;
-    }}
-
-    #snackbar.show {{
-      visibility: visible;
-      animation: fadein 0.25s, fadeout 0.25s 2s;
-    }}
-
-    @keyframes fadein {{
-      from {{
-        bottom: 0;
-        opacity: 0;
-      }}
-      to {{
-        bottom: 24px;
-        opacity: 1;
-      }}
-    }}
-
-    @keyframes fadeout {{
-      from {{
-        bottom: 24px;
-        opacity: 1;
-      }}
-      to {{
-        bottom: 0;
-        opacity: 0;
-      }}
-    }}
   </style>
 </head>
 <body>
@@ -264,9 +190,8 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
     </div>
   </div>
 
-  <div id="snackbar">Copied!</div>
-
   <script>
+    // Search filter
     const search = document.getElementById('search');
     search.addEventListener('input', () => {{
       const q = search.value.toLowerCase();
@@ -275,19 +200,6 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
         el.style.display = text.includes(q) ? '' : 'none';
       }});
     }});
-
-    function showSnackbar() {{
-      const sb = document.getElementById('snackbar');
-      sb.classList.add('show');
-      setTimeout(() => sb.classList.remove('show'), 2300);
-    }}
-
-    function copyLink(path) {{
-      const url = window.location.origin + '/' + path;
-      navigator.clipboard.writeText(url).then(() => {{
-        showSnackbar();
-      }});
-    }}
   </script>
 </body>
 </html>
@@ -302,9 +214,6 @@ for short, url in sorted(generated_links):
         <a href="/{short}">
           <md-filled-button>Open</md-filled-button>
         </a>
-        <md-filled-tonal-icon-button aria-label="Copy link" onclick="copyLink('{short}')">
-          <md-icon>content_copy</md-icon>
-        </md-filled-tonal-icon-button>
       </div>
     </div>
     '''
