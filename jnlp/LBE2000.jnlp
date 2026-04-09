@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0"
+      xmlns:jfx="http://javafx.com"
+      codebase="http://oracleforms.lowribeck.co.uk:7777/forms/java/">
+    <information>
+        <title>Oracle Forms Services</title>
+        <vendor>Oracle Corporation</vendor>
+        <homepage href="http://www.oracle.com"/>
+        <description>Oracle Forms Services applet launcher.</description>
+        <description kind="short">Oracle Forms Applet</description>
+    </information>
+    <security>
+        <all-permissions/>
+    </security>
+    <update check="always" policy="prompt-run"/>
+    <resources>
+        <!-- Application Resources -->
+        <j2se version="1.7+" href="http://java.sun.com/products/autodl/j2se"/>
+        <jfx:javafx-runtime version="2.2+"/>
+        <jar href="/forms/java/frmall.jar" download="eager" main="true" />
+        <extension name="Extensions" href="/forms/java/extensions.jnlp"/>
+    </resources>
+    <applet-desc 
+    name="Oracle Forms"
+    main-class="oracle.forms.engine.Main"
+    height="1"
+    width="1">
+    <param name="serverURL" value="/forms/lservlet?ifcfs=/forms/frmservlet?config=lbe_live&#38;ifsessid=&#38;acceptLanguage=en-GB,en;q=0.9,en-US;q=0.8"/>
+    <param name="height" value="975"/>
+    <param name="width" value="1900"/>
+    <param name="pageTitle" value="Lowri Beck LBE2000 System (Live)"/>
+	<param name="webFormsTitle"  value="Lowri Beck LBE2000 System (Live)"/>
+    <param name="networkRetries" value="30"/>
+    <param name="separateFrame" value="false"/>
+    <param name="splashScreen"  value=""/>
+    <param name="background"  value="NO"/>
+    <param name="lookAndFeel"  value="Oracle"/>
+    <param name="colorScheme"  value="swan"/>
+    <param name="customColorScheme"  value=""/>
+    <param name="serverApp" value=""/>
+    <param name="logo" value=""/>
+    <param name="imageBase" value="codebase"/>
+    <param name="formsMessageListener" value=""/>
+    <param name="recordFileName" value=""/>
+    <param name="EndUserMonitoringEnabled" value="false"/>
+    <param name="EndUserMonitoringURL" value=""/>
+    <param name="heartBeat" value=""/>
+    <param name="MaxEventWait" value=""/>
+    <param name="allowAlertClipboard" value="true"/>
+    <param name="disableValidateClipboard" value="false"/>
+    <param name="enableJavascriptEvent" value="true"/>
+    <param name="digitSubstitution" value="context"/>
+    <param name="legacy_lifecycle" value="false"/>
+    <param name="JavaScriptBlocksHeartBeat" value="false"/>
+    <param name="highContrast" value="false"/>
+    <param name="disableMDIScrollbars" value=""/>
+    <param name="clientDPI" value=""/>
+    <param name="applet_stop_timeout" value="800"/>
+    <param name="guiMode" value="0"/>
+    <param name="idleTimeout" value=""/>
+    <param name="ssoLogoutRedirect" value=""/>
+    <param name="ssoMode" value="false"/>
+    <param name="ssoLogout" value="false"/>
+    <param name="logoutTargetURLParamname" value=""/>
+    <param name="mediaBase" value="codebase"/>
+    <param name="webstartRequest" value="true"/>
+	<param name="readOnlyBackground" value="Automatic"/>
+    </applet-desc>
+</jnlp>
