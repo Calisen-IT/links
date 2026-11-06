@@ -1,0 +1,20 @@
+# Calisen - Autopilot device registration
+# Run from OOBE (Shift+F10):
+#   powershell -ep bypass -c "irm https://links.calisen.com/ap.txt | iex"
+
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
+Install-Script -Name Get-WindowsAutopilotInfo -Force
+$env:Path += ";C:\Program Files\WindowsPowerShell\Scripts"
+
+try {
+    Get-WindowsAutopilotInfo -Online -AddToGroup "Auto Pilot Enrollment Devices" -Assign
+}
+finally {
+    Disconnect-MgGraph -ErrorAction SilentlyContinue
+}
+
+Write-Host "Done. Restarting in 10 seconds..." -ForegroundColor Green
+Start-Sleep 10
+Restart-Computer -Force
