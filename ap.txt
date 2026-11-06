@@ -5,6 +5,12 @@
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
 Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
+Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+
+# Install all modules up front so nothing tries to update a module that's already loaded
+Write-Host "Installing modules (this can take a minute)..." -ForegroundColor Cyan
+Install-Module -Name Microsoft.Graph.Authentication, Microsoft.Graph.Groups, Microsoft.Graph.Identity.DirectoryManagement, WindowsAutopilotIntune -Force
+
 Install-Script -Name Get-WindowsAutopilotInfo -Force
 $env:Path += ";C:\Program Files\WindowsPowerShell\Scripts"
 
